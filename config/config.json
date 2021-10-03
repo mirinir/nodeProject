@@ -1,0 +1,12 @@
+{
+    "development":{
+        "user":"mirimiri",
+        "password":"1234",
+        "server":"localhost",
+        "database":"investment_pool",
+        "options": {
+            "encrypt": false
+          },
+          "synchronize": true
+    }
+}
