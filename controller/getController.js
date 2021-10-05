@@ -6,7 +6,7 @@ var request = new sql.Request();
 
 const getAllClients = async (req, res) => {
     try {
-       request.query('select name from clients',function (err, allClients) {
+       request.query('select name,id from clients',function (err, allClients) {
             let nameList = "";
             console.log('the all Clients: ', allClients);
             allClients.recordset.forEach((el) => {
@@ -24,8 +24,9 @@ const getAllClients = async (req, res) => {
 
 const getInvestmentPoolmName = async (req, res) => {
     try {
-        let cId = 207464041
-        request.query(`SELECT distinct investment_pool.name
+         
+        let  {cId} = req.params
+        request.query(`SELECT distinct investment_pool.id as IPI,investment_pool.name,clients.id as clientId
         FROM  investment_pool
         FULL OUTER JOIN client_pool 
         ON client_pool.investment_pool_id = investment_pool.id INNER JOIN clients 
@@ -39,7 +40,8 @@ const getInvestmentPoolmName = async (req, res) => {
                     // nameList += `<li>${el.name}</li>`;
                     CPool += cp.name + " ";
                 });
-                res.send(CPool)
+                // res.send(data)
+                res.status(200).json({ CPool: data });
             });
     }
     catch (error) {
@@ -49,9 +51,9 @@ const getInvestmentPoolmName = async (req, res) => {
 
 const getStoresNames = async (req, res) => {
     try {
-        let IPI = 3
-        let cId = 315489576
-        request.query(`SELECT stores.name
+        let {IPI,cId} = req.params
+     
+        request.query(`SELECT stores.name,client_pool.amount_invested
         FROM  stores
         INNER JOIN investment_pool 
         ON investment_pool.id = stores.investment_pool_id
@@ -62,11 +64,12 @@ const getStoresNames = async (req, res) => {
             , function (err, data) {
                 let CPool = "";
                 console.log('the all data: ', data);
-                data.recordset.forEach((cp) => {
+                data.recordset.forEach((stores) => {
                     // nameList += `<li>${el.name}</li>`;
-                    CPool += cp.name + " ";
+                    CPool += stores.name + " ";
                 });
-                res.send(CPool)
+                // res.send(CPool)
+                res.status(200).json({ stores: data });
             });
     } catch (error) {
         res.status(400).send(error)
